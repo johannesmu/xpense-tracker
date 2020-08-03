@@ -17,15 +17,14 @@ export default class App extends Component {
 
   renderList = ({item}) => (
     <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',padding:10}}>
-      <Text>${ item.amount }</Text>
       <Text>{ item.category}</Text>
+      <Text>${ item.amount }</Text>
     </View>
-    
   )
 
   addItem = () => {
     this._input.clear()
-    if( isNaN(this.state.expenseValue) ) {
+    if( isNaN(this.state.expenseValue) || this.state.expenseValue == 0 ) {
       return;
     }
     let item = {
@@ -34,7 +33,7 @@ export default class App extends Component {
       category: this.state.selectedValue
     }
     this.listData.push(item)
-    this.setState({expenseValue: 0})
+    this.setState({expenseValue: 0, selectedValue: null })
   }
 
   render() {
@@ -52,15 +51,19 @@ export default class App extends Component {
               ref={(exp) => this._input = exp }
             />
             <RNPickerSelect
-            onValueChange={value => this.setState({selectedValue: value})}
-            items={[
-              {label: 'Food', value: 'food'},
-              {label: 'Transport', value: 'transport'},
-              {label: 'Grocery', value: 'grocery'},
-              {label: 'Utility', value: 'utility'},
-              {label: 'Fuel', value: 'fuel'},
-              {label: 'Rent', value: 'rent'},
-            ]}
+              onValueChange={value => this.setState({selectedValue: value})}
+              items={[
+                {label: 'Food', value: 'food'},
+                {label: 'Transport', value: 'transport'},
+                {label: 'Grocery', value: 'grocery'},
+                {label: 'Utility', value: 'utility'},
+                {label: 'Fuel', value: 'fuel'},
+                {label: 'Rent', value: 'rent'},
+              ]}
+              style={picker}
+              value={this.state.selectedValue}
+              placeholder={placeholder}
+              useNativeAndroidPickerStyle={false}
             />
           </View>
           
@@ -89,6 +92,7 @@ export default class App extends Component {
 
 const primary = 'hsla(330, 38%, 65%, 1)';
 const secondary = 'hsla(175, 100%, 95%, 1)';
+const placeholder = { label: 'pick a type', value: null, color: 'black'}
 
 const styles = StyleSheet.create({
   container: {
@@ -110,17 +114,34 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: secondary,
-    width: '30%',
+    maxWidth: '50%',
     padding: 10,
     borderColor: primary,
-    borderWidth: 1
+    borderWidth: 1,
+    flex: 1
   },
   button: {
     backgroundColor: primary,
     zIndex: 10
   },
-  
 });
+
+const picker = StyleSheet.create({
+  inputIOS: {
+    padding: 10,
+    borderColor: primary,
+    borderWidth: 1,
+  },
+  inputAndroid: {
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: primary,
+    paddingRight: 30,
+    minWidth: '50%' 
+  },
+
+})
 
 
 // --russian-violet: hsla(255, 45%, 18%, 1);
