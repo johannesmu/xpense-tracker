@@ -2,7 +2,6 @@ import { StatusBar } from 'expo-status-bar';
 import React, {Component} from 'react';
 import { StyleSheet, Text, View, SafeAreaView, TextInput, Button, TouchableOpacity, FlatList, ScrollView } from 'react-native';
 // components
-import DropDownPicker from 'react-native-dropdown-picker';
 import RNPickerSelect from 'react-native-picker-select';
 // custom components
 import { Bar } from './components/Bar';
@@ -131,6 +130,7 @@ const picker = StyleSheet.create({
     padding: 10,
     borderColor: primary,
     borderWidth: 1,
+    minWidth: '50%',
   },
   inputAndroid: {
     paddingHorizontal: 10,
