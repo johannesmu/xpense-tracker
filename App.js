@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import { StyleSheet, Text, View, SafeAreaView, TextInput, Button, TouchableOpacity, FlatList, ScrollView } from 'react-native';
 // components
 import DropDownPicker from 'react-native-dropdown-picker';
+import RNPickerSelect from 'react-native-picker-select';
 // custom components
 import { Bar } from './components/Bar';
 import { Label } from './components/Label';
@@ -42,7 +43,7 @@ export default class App extends Component {
         <Bar text="Expenses" size={16} color="white" background={primary} />
         <View style={styles.container}>
           <Label text="Add your expense" size={16} />
-          <View style={[styles.row,{zIndex:10000}]}>
+          <View style={[styles.row]}>
             <TextInput 
               style={styles.input} 
               placeholder="$ add amount" 
@@ -50,41 +51,33 @@ export default class App extends Component {
               keyboardType="number-pad"
               ref={(exp) => this._input = exp }
             />
-            <DropDownPicker
-                items={[
-                    {label: 'Food', value: 'food'},
-                    {label: 'Transport', value: 'transport'},
-                    {label: 'Grocery', value: 'grocery'},
-                    {label: 'Utility', value: 'utility'},
-                    {label: 'Fuel', value: 'fuel'},
-                    {label: 'Rent', value: 'rent'},
-                ]}
-                defaultIndex={0}
-                defaultValue={this.state.selectedValue}
-                containerStyle={{height: 'auto', width: '50%'}}
-                onChangeItem={item => this.setState({selectedValue: item.value}) }
-                itemStyle={{ justifyContent: 'flex-start'}}
-                activeItemStyle={{color: primary}}
-                activeLabelStyle={{color: 'red'}}
-                zIndex={10000}
+            <RNPickerSelect
+            onValueChange={value => this.setState({selectedValue: value})}
+            items={[
+              {label: 'Food', value: 'food'},
+              {label: 'Transport', value: 'transport'},
+              {label: 'Grocery', value: 'grocery'},
+              {label: 'Utility', value: 'utility'},
+              {label: 'Fuel', value: 'fuel'},
+              {label: 'Rent', value: 'rent'},
+            ]}
             />
-            <TouchableOpacity 
-              style={[styles.button, {zIndex:4000} ]} 
-              onPress={item => this.addItem()
-            }
-            >
-              <Label text="Record" size={14} color="white" align="center" />
-            </TouchableOpacity>
           </View>
           
+          <TouchableOpacity 
+            style={[styles.button, {zIndex:4000} ]} 
+            onPress={item => this.addItem()
+          }>
+            <Label text="Record" size={14} color="white" align="center" />
+          </TouchableOpacity>
           
-            <SafeAreaView style={{zIndex:5000}}>
+            <SafeAreaView style={{zIndex:500}}>
               <FlatList 
                 data={this.listData} 
                 renderItem={this.renderList}
                 keyExtractor={ item => item.id }
                 extraData={this.state.expenseValue}
-                style={{zIndex:4000}}
+                style={{zIndex:400}}
               >
               </FlatList>
             </SafeAreaView>
