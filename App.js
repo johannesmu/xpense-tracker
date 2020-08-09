@@ -6,34 +6,19 @@ import RNPickerSelect from 'react-native-picker-select';
 // custom components
 import { Bar } from './components/Bar';
 import { Label } from './components/Label';
+import { ListItem } from './components/ListItem';
 
 export default class App extends Component {
   state = {
-    selectedValue: 'transport',
+    selectedValue: '',
     expenseValue: 0,
+    submitting: false,
   }
   listData = []
 
   renderList = ({item}) => (
-    <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',padding:10}}>
-      <Text>{ item.category}</Text>
-      <Text>${ item.amount }</Text>
-    </View>
+    <ListItem amount={item.amount} category={item.category} />
   )
-
-  addItem = () => {
-    this._input.clear()
-    if( isNaN(this.state.expenseValue) || this.state.expenseValue == 0 ) {
-      return;
-    }
-    let item = {
-      id: new Date().getTime().toString(), 
-      amount: this.state.expenseValue, 
-      category: this.state.selectedValue
-    }
-    this.listData.push(item)
-    this.setState({expenseValue: 0, selectedValue: null })
-  }
 
   render() {
     return (
@@ -41,11 +26,14 @@ export default class App extends Component {
         <Bar text="Expenses" size={16} color="white" background={primary} />
         <View style={styles.container}>
           <Label text="Add your expense" size={16} />
-          <View style={[styles.row]}>
+          <View style={[styles.row, {flexDirection:'row'}]}>
             <TextInput 
               style={styles.input} 
               placeholder="$ add amount" 
-              onChangeText={ text => this.setState({expenseValue: parseFloat(text) }) }
+              onChangeText={ (text) => {
+                this.setState({expenseValue: parseFloat(text) })
+                this.verifySubmit()
+              } }
               keyboardType="number-pad"
               ref={(exp) => this._input = exp }
             />
@@ -67,9 +55,10 @@ export default class App extends Component {
           </View>
           
           <TouchableOpacity 
-            style={[styles.button, {zIndex:4000} ]} 
-            onPress={item => this.addItem()
-          }>
+            style={styles.button} 
+            onPress={item => this.addItem()}
+            activeOpacity = { this.state.submitting == true ? 0.5 : 1 }
+          >
             <Label text="Record" size={14} color="white" align="center" />
           </TouchableOpacity>
           
@@ -86,6 +75,32 @@ export default class App extends Component {
         </View>
       </SafeAreaView>
     );
+  }
+
+  addItem = () => {
+    if( this.state.submitting == false ) {
+      return
+    }
+    this._input.clear()
+    if( isNaN(this.state.expenseValue) || this.state.expenseValue == 0 ) {
+      return;
+    }
+    let item = {
+      id: new Date().getTime().toString(), 
+      amount: this.state.expenseValue, 
+      category: this.state.selectedValue
+    }
+    this.listData.push(item)
+    this.setState({expenseValue: 0, selectedValue: null })
+  }
+
+  verifySubmit = () => {
+    if( this.state.expenseValue == 0 || this.state.selectedValue == null ) {
+      this.setState.submitting = false;
+    }
+    else {
+      this.setState.submitting = true
+    }
   }
 }
 
@@ -105,11 +120,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center'
-  },
-  row: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems:'stretch'
   },
   input: {
     backgroundColor: secondary,
