@@ -38,7 +38,9 @@ export default class App extends Component {
               ref={(exp) => this._input = exp }
             />
             <RNPickerSelect
-              onValueChange={value => this.setState({selectedValue: value})}
+              onValueChange={(value) => {
+                this.setState({selectedValue: value}, () => {this.verifySubmit() } )
+              }}
               items={[
                 {label: 'Food', value: 'food'},
                 {label: 'Transport', value: 'transport'},
@@ -55,9 +57,8 @@ export default class App extends Component {
           </View>
           
           <TouchableOpacity 
-            style={styles.button} 
+            style={ this.state.submitting ? styles.button : styles.buttonDisabled } 
             onPress={item => this.addItem()}
-            activeOpacity = { this.state.submitting == true ? 0.5 : 1 }
           >
             <Label text="Record" size={14} color="white" align="center" />
           </TouchableOpacity>
@@ -78,7 +79,7 @@ export default class App extends Component {
   }
 
   addItem = () => {
-    if( this.state.submitting == false ) {
+    if( this.state.submitting == false) {
       return
     }
     this._input.clear()
@@ -91,20 +92,19 @@ export default class App extends Component {
       category: this.state.selectedValue
     }
     this.listData.push(item)
-    this.setState({expenseValue: 0, selectedValue: null })
+    this.setState({expenseValue: 0, selectedValue: null, submitting: false })
   }
 
   verifySubmit = () => {
-    if( this.state.expenseValue == 0 || this.state.selectedValue == null ) {
-      this.setState.submitting = false;
-    }
-    else {
-      this.setState.submitting = true
-    }
+    console.log(this.state.selectedValue)
+    let submitTest = (this.state.expenseValue && this.state.selectedValue) ? true : false;
+    this.setState({ submitting: submitTest })
   }
+  
 }
 
 const primary = 'hsla(330, 38%, 65%, 1)';
+const primaryLight = 'hsla(330, 38%, 85%, 1)';
 const secondary = 'hsla(175, 100%, 95%, 1)';
 const placeholder = { label: 'pick a type', value: null, color: 'black'}
 
@@ -133,6 +133,9 @@ const styles = StyleSheet.create({
     backgroundColor: primary,
     zIndex: 10
   },
+  buttonDisabled : {
+    backgroundColor: primaryLight,
+  }
 });
 
 const picker = StyleSheet.create({
