@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, Button } from 'react-native';
 
 export const ListItem = ( props ) => {
   return (
@@ -10,6 +10,7 @@ export const ListItem = ( props ) => {
       <Text style={listItemStyles.listAmount}>
         ${props.amount}
       </Text>
+      <Button title="del" onPress={() => {props.delete(props.id)}} />
     </View>
   )
 }

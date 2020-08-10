@@ -17,7 +17,7 @@ export default class App extends Component {
   listData = []
 
   renderList = ({item}) => (
-    <ListItem amount={item.amount} category={item.category} />
+    <ListItem id={item.id} amount={item.amount} category={item.category} delete={ this.removeItem } />
   )
 
   render() {
@@ -31,8 +31,7 @@ export default class App extends Component {
               style={styles.input} 
               placeholder="$ add amount" 
               onChangeText={ (text) => {
-                this.setState({expenseValue: parseFloat(text) })
-                this.verifySubmit()
+                this.setState({expenseValue: parseFloat(text) }, () => { this.verifySubmit() } )
               } }
               keyboardType="number-pad"
               ref={(exp) => this._input = exp }
@@ -96,9 +95,20 @@ export default class App extends Component {
   }
 
   verifySubmit = () => {
-    console.log(this.state.selectedValue)
     let submitTest = (this.state.expenseValue && this.state.selectedValue) ? true : false;
     this.setState({ submitting: submitTest })
+  }
+
+  removeItem = ( itemId ) => {
+    let itemToDelete = this.listData.find( (item,index) => {
+      if( item.id == itemId ) { 
+        
+        this.listData.splice( index, 1)
+        this.setState({expenseValue:0})
+        return item
+      }
+    })
+    console.log(this.listData)
   }
   
 }
